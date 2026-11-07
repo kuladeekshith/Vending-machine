@@ -1,3 +1,18 @@
-git add codemagic.yaml
-git commit -m 'Add first workflow'
-git push
+workflows:
+  valuevend-android:
+    name: ValueVend Monitor APK
+    max_build_duration: 60
+    instance_type: linux_x2
+
+    scripts:
+      - name: Configure Android SDK
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+
+      - name: Build Android APK
+        script: |
+          chmod +x ./gradlew
+          ./gradlew --no-daemon :app:assembleDebug
+
+    artifacts:
+      - app/build/outputs/apk/debug/*.apk
